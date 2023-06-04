@@ -1,0 +1,82 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHmCCr5mWD9NMhuCk8DIqFjX_a1vJC4Po&libraries=places"></script>
+</head>
+<body>
+  <input type="text" id="location">
+    
+     
+    <script type="text/javascript">
+        $(document).ready(function(){
+ 
+ var autocomplete;
+  var id = "location";
+ 
+ autocomplete= new google.maps.places.autocomplete((document.getElementById(location)),{
+   types:["geocode"],
+ })
+});
+ </script>
+ 
+ 
+</body>
+</html> -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Location Display</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHmCCr5mWD9NMhuCk8DIqFjX_a1vJC4Po&libraries=places"></script>
+    <script>
+        function initialize() {
+            var input = document.getElementById('location-input');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+
+            autocomplete.addListener('place_changed', function() {
+                var place = autocomplete.getPlace();
+
+                if (!place.geometry) {
+                    console.log('No location data available');
+                    return;
+                }
+
+                var addressComponents = place.address_components;
+                var country = null;
+                var city = null;
+                var area = null;
+
+                for (var i = 0; i < addressComponents.length; i++) {
+                    var types = addressComponents[i].types;
+                    if (types.indexOf('country') !== -1) {
+                        country = addressComponents[i].long_name;
+                    } else if (types.indexOf('locality') !== -1 || types.indexOf('postal_town') !== -1) {
+                        city = addressComponents[i].long_name;
+                    } else if (types.indexOf('neighborhood') !== -1 || types.indexOf('sublocality') !== -1) {
+                        area = addressComponents[i].long_name;
+                    }
+                }
+
+                document.getElementById('country').textContent = country || 'N/A';
+                document.getElementById('city').textContent = city || 'N/A';
+                document.getElementById('area').textContent = area || 'N/A';
+            });
+        }
+    </script>
+</head>
+<body onload="initialize()">
+    <h1>Dynamic Location Display</h1>
+    <label for="location-input">Location:</label>
+    <input type="text" id="location-input" placeholder="Enter a location">
+
+    <h2>Location Details:</h2>
+    <p><strong>Country:</strong> <span id="country">N/A</span></p>
+    <p><strong>City:</strong> <span id="city">N/A</span></p>
+    <p><strong>Area:</strong> <span id="area">N/A</span></p>
+</body>
+</html>
